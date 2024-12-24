@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+
+.payement{
+    box-shadow: 5px 5px 20px #888888;
+    display: flex;
+    background-color:  #f1f4f8 ;
+    transform: translate(1200px,-300px);
+    border-radius: 10px;
+    height: 345px;
+    width: 425px;
+}
+.products{
+    
+    box-shadow: 5px 5px 20px #888888;
+    transform: translate(260px,100px);
+    padding: 20px;
+    width:1250px ;
+    background-color:  #f1f4f8 ;
+    border-radius: 10px;
+}
+.bar{
+    background-color: rgb(25, 23, 23);
+    width: 1200px;
+    height: 1px;
+    transform: translate(25px,0px);
+
+}
+.bara{
+    background-color: rgb(0, 0, 0);
+    width: 385px;
+    height: 1px;
+    transform: translate(20px,-18px);
+}
+.products h2{    
+    
+    color: rgb(42, 39, 39);
+    transform: translate(30px,0px);
+}
+
+.payement h2{
+    color: rgb(42, 39, 39);
+    transform: translate(175px,-9px);
+    }
+    #checkout{
+        
+        cursor: pointer;
+        font-weight: bold;
+        
+        padding: 10px;
+        background-color: rgb(238, 183, 110);
+        
+        height: 40px;
+        width: 200px;
+        border-radius:5px ;
+        border: none;
+        outline: none;
+        
+    }
+    #checkout:hover{
+        background-color: rgb(189, 106, 12);
+
+    }
+    #checkout:active{
+    background-color: rgb(168, 137, 101);
+    }
+.payement p{
+    position: absolute;
+    transform: translate(40px,60px);
+    opacity: .7;
+}
+.payement p#pricebeforetaxs{
+    font-style: italic;
+    transform: translate(330px, 60px);
+}
+.payement p.priceaftertax{
+    
+    transform:translate(40px,95px);
+}
+.payement p#priceaftertaxs{
+    font-style: italic;
+    transform: translate(330px,95px);
+}
+.payement p.shippingfee{
+    transform: translate(40px,130px);
+}
+.payement p#shippingfees{
+    font-style: italic;
+    transform: translate(330px,130px);
+}
+.payement p.finalprice{
+    transform: translate(40px,165px);
+}
+.payement p#finalprices{
+    font-style: italic;
+    transform: translate(330px,165px);
+}
