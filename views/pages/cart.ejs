@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="styles/cart.css">
     <link rel="stylesheet" href="styles/first_page.css">
     <link rel="icon" href="styles/images/no_bg.png" type="image/x-icon">
+    <script src="https://js.stripe.com/v3/"></script>
+
 </head>
 <header>
     <div class="left_box">
@@ -56,7 +58,7 @@
         <div class="products" >
             <div class="title"><h2>Cart</h2>
             <div class="bar"></div></div>
-            <div class="prod">
+            
 
                   <!-- Check if the cart is empty -->
   <% if (!cart || cart.length === 0) { %>
@@ -77,9 +79,9 @@
           <tr>
             <td><img width="70px" height="70px" src="<%= product.img %>" alt="<%= product.name %>"></td>
             <td><%= product.name %></td>
-            <td>$<%= product.price.toFixed(2) %></td>
+            <td><%= product.price.toFixed(2) %> MAD</td>
             <td><%= product.quantity %></td>
-            <td>$<%= (product.price * product.quantity).toFixed(2) %></td>
+            <td><%= (product.price * product.quantity).toFixed(2) %> MAD</td>
             <td>
                 <form action="/cart/delete" method="POST" style="display:inline;">
                   <input type="hidden" name="id" value="<%= product.id %>">
@@ -93,25 +95,20 @@
       <tfoot>
         <tr>
           <td colspan="4"><strong>Grand Total</strong></td>
-          <td id="total"><strong>$<%= total.toFixed(2) %></strong></td>
+          <td id="total"><strong><%= total.toFixed(2) %> MAD</strong></td>
         </tr>
       </tfoot>
     </table>
     <br>
     <br>
-    <form action="/checkout" method="POST">
+    <form action="/checkout" method="post">
       <button id="checkout" type="submit">Proceed to Checkout</button>
     </form><br>
     <a href="/">Continue Shopping</a>
-  <% } %>
-
-
-                
-          
-        
-
-
-        
-    <script src="ecom/scripts/cart.js"></script>
+  <% } %> </div>
+    <script src="scripts/cart.js"></script>
 </body>
+
+
+
 </html>
