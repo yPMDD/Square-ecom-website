@@ -240,9 +240,20 @@ app.post('/checkout',async (req,res)=>{
 });
 
 //succes get
-app.get('/success',(req,res)=>{
+app.get('/success', async (req,res)=>{
+    const conn = {
+        host: 'localhost',
+        user: 'test',
+        password: 'test',
+        database: 'square',
+    };
+    let connection = await mysql2.createConnection(conn);
+    connection.execute('INSERT INTO orders')
+
     req.session.cart = [];
     req.session.total = 0;
+
+
     res.render('pages/success');
 });
 app.get('/cancel',(req,res)=>{
@@ -301,6 +312,7 @@ app.post('/register', async (req, res) => {
         'INSERT INTO users (user, email, mdp) VALUES (?, ?, ?)',
         [username, email, hashedPassword]
       );
+        req.session.email= email;
   
       if (result.affectedRows > 0) {
         return res.redirect('/urin');
@@ -321,8 +333,37 @@ app.post('/register', async (req, res) => {
 app.get('/signup',(req,res)=>{
     res.render('pages/signup');
 })
-app.get('/urin',(req,res)=>{
-    res.render('pages/urin');
+app.get('/urin', async (req, res) => {
+    // Check if the user is logged in (session exists)
+    if (!req.session.email) {
+        return res.redirect('/login'); // Redirect to login if no session
+    }
+
+    const email = req.session.email; // Get email from session
+
+    try {
+        // Create a database connection
+        const connection = await mysql2.createConnection(dbConfig);
+
+        // Query to fetch the user ID
+        const [rows] = await connection.execute('SELECT id FROM users WHERE email = ?', [email]);
+
+        // Check if a user was found
+        if (rows.length > 0) {
+            req.session.Id = rows[0].id; // Store the user ID in the session
+        } else {
+            return res.status(404).send('User not found'); // Handle case where user doesn't exist
+        }
+
+        // Close the connection
+        await connection.end();
+
+        // Render the 'urin' page
+        res.render('pages/urin');
+    } catch (error) {
+        console.error('Database error:', error);
+        res.status(500).send('Internal Server Error');
+    }
 });
 
 app.get('/regi_failed',(req,res)=>{
@@ -335,4 +376,62 @@ app.get('/user_alr',(req,res)=>{
 app.get('/email_alr',(req,res)=>{
     const email_alr ='Email already exists ';
     res.render('pages/regi_failed',{email_alr});
+})
+app.get('/login',(req,res)=>{
+    res.render('pages/login');
+});
+
+app.post('/login', async (req, res) => {
+    const { email, mdp } = req.body;
+
+    const conn = {
+        host: 'localhost',
+        user: 'test',
+        password: 'test',
+        database: 'square',
+    };
+
+    try {
+        // Create a connection to the database
+        const connection = await mysql2.createConnection(conn);
+
+        // Query to fetch the hashed password for the given email
+        const [rows] = await connection.execute(
+            'SELECT mdp FROM users WHERE email = ?',
+            [email]
+        );
+
+        if (rows.length > 0) {
+            const user = rows[0];
+            const hashedPassword = user.mdp;
+
+            // Verify the password
+            const isPasswordValid = await bcrypt.compare(mdp, hashedPassword);
+            if (isPasswordValid) {
+                res.redirect('/urin');
+            } else {
+                res.redirect('/mdpincorrect');
+            }
+        } else {
+            // Email not found
+            res.redirect('/email_notfound');
+        }
+
+        // Close the connection
+        await connection.end();
+    } catch (error) {
+        console.error('Database error:', error);
+        res.status(500).send('Database error');
+    }
+});
+app.get('/emailnotfound',(req,res)=>{
+    let text = 'email not found';
+    res.render('pages/mdp_i',{text});
+});
+app.get('/mdpincorrect',(req,res)=>{
+    let text = 'mdp incorrect';
+    res.render('pages/mdp_i',{text});
+});
+app.get('/login',(req,res)=>{
+    res.render('pages/login');
 })
