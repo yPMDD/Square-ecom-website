@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/signup.css">
+    <link rel="icon" href="styles/images/no_bg.png" type="image/x-icon">
+    <title>Square | Sign up</title>
+</head>
+
+<body>
+    <div class="box">
+        <div class="boks">
+            <img src="styles/images/1732832232686.png" alt="E mdwra" class="E_mdwra">
+        </div>
+        <h1 class="signup">Sign Up</h1>
+        
+        <form action="/register" method="POST">
+            <div class="user">Username</div>
+            <div class="user_box">
+                <input type="text" name="user" id="user" placeholder="Username" required>
+            </div>
+            <div class="email">Email</div>
+            <div class="email_box">
+                <input type="email" name="email" id="email" placeholder="Evolution@gmail.com" required>
+            </div>
+        
+            <div class="mdp">Password (8 or more characters)</div>
+            <div class="mdp_box">
+                <input type="password" name="mdp" id="mdp" placeholder="**********" required>
+            </div>
+            <div class="alrdi">
+                <p class="member"> Already have an account !
+                    <a class="login" href="login.php">LOG IN</a>
+                </p> 
+            </div>
+            <button type="submit" name="submit" id="submit" class="btn" >SIGN UP</button>
+        </form>
+        
+    </div>
+    
+</body>
+</html>

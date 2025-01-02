@@ -5,9 +5,11 @@ const express = require('express');
 const ejs =  require('ejs');
 const bodyparser = require('body-parser');
 const mysql = require('mysql2');
+const mysql2 = require('mysql2/promise');
 const app = express();
 const session = require('express-session');
 const bodyParser = require('body-parser');
+const bcrypt = require('bcrypt');
 app.use(bodyparser.urlencoded({extended:true}));
 app.use(session({
     secret: 'your_secret_key',
@@ -15,11 +17,11 @@ app.use(session({
     saveUninitialized: true
 }));
 
- mysql.createConnection({
+const con = mysql.createConnection({
     host:'localhost',
     user:'root',
     password:'',
-    database:'square'
+    database:'square',
 });
 
 app.use(express.static('public'));
@@ -32,12 +34,7 @@ app.listen(3000,()=>{
 });
 //localhost:3000
 app.get('/',function(req,res){
-    let con = mysql.createConnection({
-        host:'localhost',
-        user:'root',
-        password:'',
-        database:'square'
-    });
+    
     console.log('connected to db successfully...');
     con.query("SELECT * FROM products",(err,result)=>{
         if (err) {
@@ -54,13 +51,8 @@ app.get('/',function(req,res){
     
 });
 app.get('/index',function(req,res){
-     let con = mysql.createConnection({
-        host:'localhost',
-        user:'root',
-        password:'',
-        database:'square'
-    });
-    console.log('connected to db successfully...');
+    
+    
     con.query("SELECT * FROM products",(err,result)=>{
         if (err) {
             console.error("Error fetching data from the database:", err);
@@ -205,9 +197,16 @@ const domain = process.env.domain;
 const stripegateway = stripe(process.env.stripe_api);
 app.post('/checkout',async (req,res)=>{
     const lineItems = req.session.cart.map((item)=>{
-        const unitAmount = parseInt(item.price)*100;
-        const imgs= 'styles/images/'+item.img;
+        const unitAmount = Math.round(parseFloat(item.price) * 100);
+        if (isNaN(unitAmount)) {
+            throw new Error(`Invalid price for item: ${JSON.stringify(item)}`);
+        }
+
+        const imgs = `styles/images/${item.img}`;
         console.log('item-price',item.price);
+        if (!item.img) {
+            console.error('Missing image for item:', item);
+        }
         console.log('inutAmount',unitAmount);
         return{
             price_data:{
@@ -220,7 +219,10 @@ app.post('/checkout',async (req,res)=>{
             },
             quantity:item.quantity,
         };
+        
     });
+    
+
     console.log('lineItems:',lineItems);
 
 
@@ -229,18 +231,19 @@ app.post('/checkout',async (req,res)=>{
         payment_method_types:['card'],
         mode:'payment',
         success_url:`${domain}/success`,
-        cancel_url:`${domain}/cancel`,
+        cancel_url:`${domain}/cart`,
         line_items:lineItems,
 
     });
-    res.json( session.url );
+    console.log(session.url);
+    res.redirect( session.url );
 });
 
 //succes get
 app.get('/success',(req,res)=>{
     req.session.cart = [];
     req.session.total = 0;
-    res.render('pages/succes');
+    res.render('pages/success');
 });
 app.get('/cancel',(req,res)=>{
     res.render('pages/cancel');
@@ -248,3 +251,88 @@ app.get('/cancel',(req,res)=>{
 app.get('/cart-items', (req, res) => {
     res.json({ cart: req.session.cart || [] });
   });
+
+
+
+
+// Route for handling POST requests
+app.post('/register', async (req, res) => {
+    const { user: username, email, mdp } = req.body;
+    
+    const conn = {
+        host: 'localhost',
+        user: 'test',
+        password: 'test',
+        database: 'square',
+    };
+    
+
+    let connection;
+    try {
+      // Establish database connection
+      connection = await mysql2.createConnection(conn);
+  
+      // Check if the email already exists
+      const [emailExists] = await connection.execute(
+        'SELECT email FROM users WHERE email = ?',
+        [email]
+      );
+  
+      if (emailExists.length > 0) {
+        return res.redirect('/email_alr');
+      }
+  
+      // Check if the username already exists
+      const [userExists] = await connection.execute(
+        'SELECT user FROM users WHERE user = ?',
+        [username]
+      );
+  
+      if (userExists.length > 0) {
+        
+        return res.redirect('/user_alr');
+      }
+  
+      // Hash the password
+      const hashedPassword = await bcrypt.hash(mdp, 10);
+  
+      // Insert new user into the database
+      const [result] = await connection.execute(
+        'INSERT INTO users (user, email, mdp) VALUES (?, ?, ?)',
+        [username, email, hashedPassword]
+      );
+  
+      if (result.affectedRows > 0) {
+        return res.redirect('/urin');
+      } else {
+        return res.redirect('/regi_failed');
+      }
+    } catch (err) {
+      console.error('Server error:', err);
+      return res.status(500).send('Server error.');
+    } finally {
+      // Ensure the database connection is always closed
+      if (connection) {
+        await connection.end();
+      }
+    }
+  });
+
+app.get('/signup',(req,res)=>{
+    res.render('pages/signup');
+})
+app.get('/urin',(req,res)=>{
+    res.render('pages/urin');
+});
+
+app.get('/regi_failed',(req,res)=>{
+    res.render('pages/regi_failed');
+});
+app.get('/user_alr',(req,res)=>{
+    const email_alr ='Username already exists ';
+    res.render('pages/regi_failed',{email_alr});
+})
+app.get('/email_alr',(req,res)=>{
+    const email_alr ='Email already exists ';
+    res.render('pages/regi_failed',{email_alr});
+})
