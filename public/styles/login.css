@@ -1,144 +1,152 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Preahvihear&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Preahvihear&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
-
-p{
-    position: absolute;
-}
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing :border-box ;
-    font-family: "poppins",sans-serif;
-}
-body{
-    background-color: #f8f8f8;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh ;
-    
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: "poppins", sans-serif;
 }
 
-.boks{
-    margin-left: 680px;
-    position: absolute;
-    color: black;
-    width: 525px;
-    height: 749px;
-    background: rgb(67, 67, 233);
-    border-radius:40px ;
+.fm {
+	position: fixed;
+	top: 1rem; /* Equivalent to top-4 in Tailwind */
+	left: -100%;
+	/* Equivalent to bg-green-500 in Tailwind */
+	color: white; /* Equivalent to text-white in Tailwind */
+	padding: 8px 1rem; /* Equivalent to px-4 py-2 in Tailwind */
+	border-top-right-radius: 0.5rem; /* Rounds top-right corner */
+	border-bottom-right-radius: 0.5rem; /* Rounds bottom-right corner */
+	box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+		0 4px 6px -4px rgba(0, 0, 0, 0.1);
+	animation: slideIn 0.5s forwards;
 }
-.boks .E_mdwra{
-    transform: translate(0px,210px);
+@keyframes slideIn {
+	from {
+		left: -100%; /* Start off-screen to the left */
+	}
+	to {
+		left: 0rem; /* Slide to 1rem from the left */
+	}
 }
-form{
-    transform: translate(0px,70px);
-}
-.box{
-    color: black;
-    width:1201px;
-    height: 749px;
-    background: #f1f4f8;
-    box-shadow: 0 10px  25px  gray;
-    border-radius: 40px;
-
-
-}
-.tit{
-    color: black;
-    font-weight: normal;
-    margin-left: 90px;
+body {
+	background-color: #f8f8f8;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
 }
 
-.box h1{
-    color: rgb(67, 67, 233);
-    
-    font-size: 36px;
-    text-align: left;
-    margin-left: 23%;
-    margin-top: 7%;
-    margin-bottom: 7%;
-
+.boks {
+	margin-left: 680px;
+	position: absolute;
+	color: black;
+	width: 525px;
+	height: 749px;
+	background: rgb(67, 67, 233);
+	border-radius: 40px;
 }
-.box .input_box{
-    width: 478px;
-    height: 77px ;
-    margin-left: 90px;
-
+.boks .E_mdwra {
+	transform: translate(0px, 210px);
 }
-.input_box input{
-    margin-top: 2%;
-    width: 100%;
-    height: 46px;
-    border: none;
-    outline: 2px solid rgba(255, 255, 255, .2);
-    border-radius: 8px;
-    padding: 15px;
+form {
+	transform: translate(0px, 70px);
 }
-.tit .forgot_mdp{
-    opacity: 0.5;
-    color:black ;
-    font-family: "poppins",sans-serif;
-    margin-left: 250px;
-    font-weight: bolder;
+.box {
+	color: black;
+	width: 1201px;
+	height: 749px;
+	background: #f1f4f8;
+	box-shadow: 0 10px 25px gray;
+	border-radius: 40px;
+}
+.tit {
+	color: black;
+	font-weight: normal;
+	margin-left: 90px;
 }
 
-.btn{transform: translate(0px,70px);
-    border:none;
-    margin-top: 3% ;
-    margin-left: 260px;
-    border-radius: 40px;
-    outline: 2px solid rgba(255, 255, 255, .2);
-    height: 46px;
-    width:150px ;
-    color:#fff;
-    background-color: rgb(67, 67, 233);
-    font-family: "poppins",sans-serif;
-    font-weight: bolder;
-    box-shadow: 0 4px 8px grey;
-    
-    
+.box h1 {
+	color: rgb(67, 67, 233);
+
+	font-size: 36px;
+	text-align: left;
+	margin-left: 23%;
+	margin-top: 7%;
+	margin-bottom: 7%;
 }
-.btn:hover{
-    border:none;
-    margin-top: 3% ;
-    margin-left: 260px;
-    border-radius: 40px;
-    outline: 2px solid rgb(15, 15, 136);
-    height: 46px;
-    width:150px ;
-    color:#fff;
-    background-color: rgb(15, 15, 136);
-    font-family: "poppins",sans-serif;
-    font-weight: bolder;
-    transition: 0.5s;
-    
-    
+.box .input_box {
+	width: 478px;
+	height: 77px;
+	margin-left: 90px;
 }
-.btn:active{
-    outline: 2px solid rgb(15, 15, 136);
-    background-color: rgb(255, 255, 255);
+.input_box input {
+	margin-top: 2%;
+	width: 100%;
+	height: 46px;
+	border: none;
+	outline: 2px solid rgba(255, 255, 255, 0.2);
+	border-radius: 8px;
+	padding: 15px;
+}
+.tit .forgot_mdp {
+	opacity: 0.5;
+	color: black;
+	font-family: "poppins", sans-serif;
+	margin-left: 250px;
+	font-weight: bolder;
 }
 
-.register_link{
-    transform: translate(0px,70px);
-    opacity: 0.5;
-    margin-top: 5%;
-    color: black;
-    margin-left: 190px;
-
+.btn {
+	transform: translate(0px, 70px);
+	border: none;
+	margin-top: 3%;
+	margin-left: 260px;
+	border-radius: 40px;
+	outline: 2px solid rgba(255, 255, 255, 0.2);
+	height: 46px;
+	width: 150px;
+	color: #fff;
+	background-color: rgb(67, 67, 233);
+	font-family: "poppins", sans-serif;
+	font-weight: bolder;
+	box-shadow: 0 4px 8px grey;
 }
-.register_link .regi_link{
-    opacity: 1.5;
-    color:rgb(67, 67, 233);
-    font-family: "poppins",sans-serif;
-    margin-left: 10px;
-    font-weight: bolder;
+.btn:hover {
+	border: none;
+	margin-top: 3%;
+	margin-left: 260px;
+	border-radius: 40px;
+	outline: 2px solid rgb(15, 15, 136);
+	height: 46px;
+	width: 150px;
+	color: #fff;
+	background-color: rgb(15, 15, 136);
+	font-family: "poppins", sans-serif;
+	font-weight: bolder;
+	transition: 0.5s;
+}
+.btn:active {
+	outline: 2px solid rgb(15, 15, 136);
+	background-color: rgb(255, 255, 255);
 }
 
-.mdpinput{
-    transform: translate(0px,20px);
+.register_link {
+	transform: translate(0px, 70px);
+	opacity: 0.5;
+	margin-top: 5%;
+	color: black;
+	margin-left: 190px;
+}
+.register_link .regi_link {
+	opacity: 1.5;
+	color: rgb(67, 67, 233);
+	font-family: "poppins", sans-serif;
+	margin-left: 10px;
+	font-weight: bolder;
 }
 
+.mdpinput {
+	transform: translate(0px, 20px);
+}

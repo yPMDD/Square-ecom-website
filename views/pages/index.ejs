@@ -1,123 +1,395 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Square | home</title>
-    <link rel="stylesheet" href="styles/first_page.css">
-    <link rel="icon" href="styles/images/no_bg.png" type="image/x-icon">
-</head>
-<header>
-    <div class="left_box">
-        <button  class="accueil" >Accueil</button> 
-        <div class="box">
-            <input id="search_box" type="text" placeholder="Search..." onkeyup="filterProducts()">
-            <a href="#products">
-                <svg class="loop" width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Square | home</title>
+		<script
+			src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+			defer
+		></script>
+		<link rel="stylesheet" href="styles/first_page.css" />
+		<link rel="icon" href="styles/images/no_bg.png" type="image/x-icon" />
+	</head>
 
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"/>
-                    
-                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
-                    
-                    <g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M15 10.5C15 12.9853 12.9853 15 10.5 15C8.01472 15 6 12.9853 6 10.5C6 8.01472 8.01472 6 10.5 6C12.9853 6 15 8.01472 15 10.5ZM14.1793 15.2399C13.1632 16.0297 11.8865 16.5 10.5 16.5C7.18629 16.5 4.5 13.8137 4.5 10.5C4.5 7.18629 7.18629 4.5 10.5 4.5C13.8137 4.5 16.5 7.18629 16.5 10.5C16.5 11.8865 16.0297 13.1632 15.2399 14.1792L20.0304 18.9697L18.9697 20.0303L14.1793 15.2399Z" fill="#4343e9" data-darkreader-inline-fill="" style="--darkreader-inline-fill: #13139e;"/> </g>
-                    
-                    </svg>
-            </a>
+	<body>
+		<header>
+			<div class="left_box">
+				<button class="accueil">Accueil</button>
+				<div class="box">
+					<input
+						id="search_box"
+						type="text"
+						placeholder="Search..."
+						onkeyup="filterProducts()"
+					/>
+					<a href="#products">
+						<svg
+							class="loop"
+							width="25px"
+							height="25px"
+							viewBox="0 0 24 24"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<g id="SVGRepo_bgCarrier" stroke-width="0" />
 
-        </div>
-        
-    </div>
+							<g
+								id="SVGRepo_tracerCarrier"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
 
-    <a id="logo" href="index"><img   src="styles/images/nobg.png" alt="logo" style="width: 200px; height: 100px;"></a>
-    
-    <div class="rightbox">
-        <a href="/signup" id="profile"><svg width="18px" height="18px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-            
-            <g id="Dribbble-Light-Preview" transform="translate(-140.000000, -2159.000000)" fill="#000000">
-                    <g id="icons" transform="translate(56.000000, 160.000000)">
-                        <path d="M100.562548,2016.99998 L87.4381713,2016.99998 C86.7317804,2016.99998 86.2101535,2016.30298 86.4765813,2015.66198 C87.7127655,2012.69798 90.6169306,2010.99998 93.9998492,2010.99998 C97.3837885,2010.99998 100.287954,2012.69798 101.524138,2015.66198 C101.790566,2016.30298 101.268939,2016.99998 100.562548,2016.99998 M89.9166645,2004.99998 C89.9166645,2002.79398 91.7489936,2000.99998 93.9998492,2000.99998 C96.2517256,2000.99998 98.0830339,2002.79398 98.0830339,2004.99998 C98.0830339,2007.20598 96.2517256,2008.99998 93.9998492,2008.99998 C91.7489936,2008.99998 89.9166645,2007.20598 89.9166645,2004.99998 M103.955674,2016.63598 C103.213556,2013.27698 100.892265,2010.79798 97.837022,2009.67298 C99.4560048,2008.39598 100.400241,2006.33098 100.053171,2004.06998 C99.6509769,2001.44698 97.4235996,1999.34798 94.7348224,1999.04198 C91.0232075,1998.61898 87.8750721,2001.44898 87.8750721,2004.99998 C87.8750721,2006.88998 88.7692896,2008.57398 90.1636971,2009.67298 C87.1074334,2010.79798 84.7871636,2013.27698 84.044024,2016.63598 C83.7745338,2017.85698 84.7789973,2018.99998 86.0539717,2018.99998 L101.945727,2018.99998 C103.221722,2018.99998 104.226185,2017.85698 103.955674,2016.63598" id="profile_round-[#1342]"></path>
-                    </g>
-                </g>
-            
-        </svg>
-    </a>
-    
-        <a id="cart" href="cart">
-            <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M1 1C0.447715 1 0 1.44772 0 2C0 2.55228 0.447715 3 1 3H3.20647L5.98522 14.9089C6.39883 16.6816 7.95486 17.9464 9.76471 17.9983V18H17.5874C19.5362 18 21.2014 16.5956 21.5301 14.6747L22.7857 7.33734C22.9947 6.11571 22.0537 5 20.8143 5H5.72686L4.97384 1.77277C4.86824 1.32018 4.46475 1 4 1H1ZM6.19353 7L7.9329 14.4545C8.14411 15.3596 8.95109 16 9.88058 16H17.5874C18.5618 16 19.3944 15.2978 19.5588 14.3373L20.8143 7H6.19353Z" fill="#000000"/>
-                <path d="M8 23C9.10457 23 10 22.1046 10 21C10 19.8954 9.10457 19 8 19C6.89543 19 6 19.8954 6 21C6 22.1046 6.89543 23 8 23Z" fill="#000000"/>
-                <path d="M19 23C20.1046 23 21 22.1046 21 21C21 19.8954 20.1046 19 19 19C17.8954 19 17 19.8954 17 21C17 22.1046 17.8954 23 19 23Z" fill="#000000"/>
-                </svg>
-        </a>
-    </div>
-</header>
-<body>
-    <button id="prev">&lt;</button>
-        <div id="slides">
-            <img class="i" src="styles/images/i4.webp" alt="photo1">
-            <img class="i" src="styles/images/i2.webp" alt="photo2">
-            <img class="i" src="styles/images/i3.webp" alt="photo3">
-            <img class="i" src="styles/images/i1.webp" alt="photo4">
-        </div>
-    <button id="next">&gt;</button>
+							<g id="SVGRepo_iconCarrier">
+								<path
+									fill-rule="evenodd"
+									clip-rule="evenodd"
+									d="M15 10.5C15 12.9853 12.9853 15 10.5 15C8.01472 15 6 12.9853 6 10.5C6 8.01472 8.01472 6 10.5 6C12.9853 6 15 8.01472 15 10.5ZM14.1793 15.2399C13.1632 16.0297 11.8865 16.5 10.5 16.5C7.18629 16.5 4.5 13.8137 4.5 10.5C4.5 7.18629 7.18629 4.5 10.5 4.5C13.8137 4.5 16.5 7.18629 16.5 10.5C16.5 11.8865 16.0297 13.1632 15.2399 14.1792L20.0304 18.9697L18.9697 20.0303L14.1793 15.2399Z"
+									fill="#4343e9"
+									data-darkreader-inline-fill=""
+									style="--darkreader-inline-fill: #13139e"
+								/>
+							</g>
+						</svg>
+					</a>
+				</div>
+			</div>
 
-    <div id="products">
-     <h1>Nos produits</h1>
-     <br>
-        <div id="slots">
-            <% result.forEach(function(item){ %>
-                <form action="/product_info" method="post">
-                    <input type="hidden" name="id" value="<%= item.id%>">
-                    <input type="hidden" name="title" value="<%=item.name %>">
-                    <input type="hidden"  name="img" value="styles/images/slots/<%=item.image %>">
-                    <input type="hidden"  name="price" value="<%=item.price %>">
-                    <button type="submit"  class="s" onclick="openWithUrl(this)">
-                        <img src=" styles/images/slots/<%=item.image %>" alt="Prix: <%=item.price %> MAD" class="slot-image" >
-                        <p class="slot-text"><%=item.name %></p>
-                    </button>
-                    
-                </form>
-           
-            <% }) %>
-            
-        </div>
-    </div>
+			<a id="logo" href="index"
+				><img
+					src="styles/images/nobg.png"
+					alt="logo"
+					style="width: 200px; height: 100px"
+			/></a>
 
-<footer class="footer">
-    <p id="text"><strong>Sécurité et vie privée : </strong><br>
-       <u> Paiements sûrs: </u>Nous ne partageons pas vos données personnelles avec des tiers sans votre consentement.
-        <u>Informations personnelles sécurisées: </u>Nous protégeons votre vie privée et assurons la sécurité de vos données personnelles.
-    </p>
+			<div class="rightbox">
+				<a id="profile">
+					<% if (user) { %>
+					<span
+						style="
+							padding: 2px;
+							color: #000000;
+							font-weight: 400;
+							font-size: large;
+						"
+					>
+						<%= user.user %></span
+					>
+					<% } %>
+					<svg
+						class="profile_icon"
+						width="18px"
+						height="18px"
+						viewBox="0 0 20 20"
+						version="1.1"
+						xmlns="http://www.w3.org/2000/svg"
+						xmlns:xlink="http://www.w3.org/1999/xlink"
+					>
+						<g
+							id="Dribbble-Light-Preview"
+							transform="translate(-140.000000, -2159.000000)"
+							fill="#000000"
+						>
+							<g id="icons" transform="translate(56.000000, 160.000000)">
+								<path
+									d="M100.562548,2016.99998 L87.4381713,2016.99998 C86.7317804,2016.99998 86.2101535,2016.30298 86.4765813,2015.66198 C87.7127655,2012.69798 90.6169306,2010.99998 93.9998492,2010.99998 C97.3837885,2010.99998 100.287954,2012.69798 101.524138,2015.66198 C101.790566,2016.30298 101.268939,2016.99998 100.562548,2016.99998 M89.9166645,2004.99998 C89.9166645,2002.79398 91.7489936,2000.99998 93.9998492,2000.99998 C96.2517256,2000.99998 98.0830339,2002.79398 98.0830339,2004.99998 C98.0830339,2007.20598 96.2517256,2008.99998 93.9998492,2008.99998 C91.7489936,2008.99998 89.9166645,2007.20598 89.9166645,2004.99998 M103.955674,2016.63598 C103.213556,2013.27698 100.892265,2010.79798 97.837022,2009.67298 C99.4560048,2008.39598 100.400241,2006.33098 100.053171,2004.06998 C99.6509769,2001.44698 97.4235996,1999.34798 94.7348224,1999.04198 C91.0232075,1998.61898 87.8750721,2001.44898 87.8750721,2004.99998 C87.8750721,2006.88998 88.7692896,2008.57398 90.1636971,2009.67298 C87.1074334,2010.79798 84.7871636,2013.27698 84.044024,2016.63598 C83.7745338,2017.85698 84.7789973,2018.99998 86.0539717,2018.99998 L101.945727,2018.99998 C103.221722,2018.99998 104.226185,2017.85698 103.955674,2016.63598"
+									id="profile_round-[#1342]"
+								></path>
+							</g>
+						</g>
+					</svg>
+				</a>
 
-    <div id="contact">
-        <p><u><strong>Contactez nous</strong></u></p>
-        <p>Numero Tel: 0638667866</p>
-        <p>Email: 2quare@gmail.com</p>
-    </div>
+				<a id="cart" href="cart">
+					<svg
+						width="20px"
+						height="20px"
+						viewBox="0 0 24 24"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<path
+							fill-rule="evenodd"
+							clip-rule="evenodd"
+							d="M1 1C0.447715 1 0 1.44772 0 2C0 2.55228 0.447715 3 1 3H3.20647L5.98522 14.9089C6.39883 16.6816 7.95486 17.9464 9.76471 17.9983V18H17.5874C19.5362 18 21.2014 16.5956 21.5301 14.6747L22.7857 7.33734C22.9947 6.11571 22.0537 5 20.8143 5H5.72686L4.97384 1.77277C4.86824 1.32018 4.46475 1 4 1H1ZM6.19353 7L7.9329 14.4545C8.14411 15.3596 8.95109 16 9.88058 16H17.5874C18.5618 16 19.3944 15.2978 19.5588 14.3373L20.8143 7H6.19353Z"
+							fill="#000000"
+						/>
+						<path
+							d="M8 23C9.10457 23 10 22.1046 10 21C10 19.8954 9.10457 19 8 19C6.89543 19 6 19.8954 6 21C6 22.1046 6.89543 23 8 23Z"
+							fill="#000000"
+						/>
+						<path
+							d="M19 23C20.1046 23 21 22.1046 21 21C21 19.8954 20.1046 19 19 19C17.8954 19 17 19.8954 17 21C17 22.1046 17.8954 23 19 23Z"
+							fill="#000000"
+						/>
+					</svg>
+					<span>0</span>
+				</a>
+			</div>
+		</header>
+		<% if (flash) { %>
 
-     <div id="links">
-        <a href="#logo">Acceuil</a> <br><br>
-        <a href="#products">Nos Produits</a>
-     </div>
+		<div
+			class="fm"
+			x-init="setTimeout(() => show = false, 2500)"
+			x-data="{ show: true }"
+			x-show="show"
+			x-transition.duration.500ms
+			@click.away="show = false"
+			style="background-color: 
+			<%= flash.type === 'success' ? '#499b68' : '#ec5316' %>;"
+		>
+			<p><%= flash.message %></p>
+		</div>
+		<% } %>
 
-     <div id="social">
-       <p><u><strong>Autres moyen de nous contacter:</strong></u></p>
-       <a href="">Facebook</a><br><br>
-       <a href="">Instagram</a><br><br>
-       <a href="">X</a>
-     </div>
+		<button id="prev">&lt;</button>
+		<div id="slides">
+			<img class="i" src="styles/images/i4.webp" alt="photo1" />
+			<img class="i" src="styles/images/i2.webp" alt="photo2" />
+			<img class="i" src="styles/images/i3.webp" alt="photo3" />
+			<img class="i" src="styles/images/i1.webp" alt="photo4" />
+		</div>
+		<button id="next">&gt;</button>
 
-    
-</footer>
-<div id="lastdiv"><p>&copy;2024| Created by Saad&Saad| All rights reserved</p></div>
-    <script src="scripts/index.js"></script>
-    
-    <div id="menu">
-        <button class="profile_case">s'inscrire</button>
-        <button class="profile_case">se connecter</button>
-        <button class="profile_case">Historique d'achats</button>
-        <button class="profile_case">Informations personnelles</button>
-      </div>
+		<div id="products">
+			<h1>Nos produits</h1>
+			<br />
+			<div id="slots">
+				<% result.forEach(function(item){ %>
+				<div class="product-card">
+					<form action="/product_info" method="post">
+						<input type="hidden" name="id" value="<%= item.id %>" />
+						<input type="hidden" name="title" value="<%= item.name %>" />
+						<input
+							type="hidden"
+							name="img"
+							value="styles/images/slots/<%= item.image %>"
+						/>
+						<input type="hidden" name="price" value="<%= item.price %>" />
+						<button type="submit" class="s" onclick="openWithUrl(this)">
+							<div class="card">
+								<div class="mini">
+									<div class="product-image">
+										<img
+											src="styles/images/slots/<%= item.image %>"
+											alt="Prix: <%= item.price %> MAD"
+										/>
+									</div>
+									<div class="product-details">
+										<h2 class="product-title"><%= item.name %></h2>
+										<p class="product-description">
+											<%= item.description || '' %>
+										</p>
 
-</body>
+										<span class="discounted-price"
+											><%= item.price %>,00 MAD</span
+										>
+									</div>
+								</div>
+							</div>
+						</button>
+					</form>
+					<form action="/fastadd" method="post">
+						<input type="hidden" name="id" value="<%= item.id%>" />
+						<input type="hidden" name="title" value="<%= item.name %>" />
+						<input
+							type="hidden"
+							name="img"
+							value="styles/images/slots/<%= item.image %>"
+						/>
+						<input type="hidden" name="price" value="<%=item.price%>" />
+						<input type="hidden" name="quantity" value="1" />
+						<input type="submit" class="add-to-cart-btn" value="add to cart" />
+					</form>
+				</div>
+				<% }) %>
+			</div>
+		</div>
+
+		<footer class="footer">
+			<p id="text">
+				<strong>Sécurité et vie privée : </strong><br />
+				<u> Paiements sûrs: </u>Nous ne partageons pas vos données personnelles
+				avec des tiers sans votre consentement.
+				<u>Informations personnelles sécurisées: </u>Nous protégeons votre vie
+				privée et assurons la sécurité de vos données personnelles.
+			</p>
+
+			<div id="contact">
+				<p>
+					<u><strong>Contactez nous</strong></u>
+				</p>
+				<p>Numero Tel: 0638667866</p>
+				<p>Email: 2quare@gmail.com</p>
+			</div>
+
+			<div id="links">
+				<a href="#logo">Acceuil</a> <br /><br />
+				<a href="#products">Nos Produits</a>
+			</div>
+
+			<div id="social">
+				<p>
+					<u><strong>Autres moyen de nous contacter:</strong></u>
+				</p>
+				<a href="">Facebook</a><br /><br />
+				<a href="">Instagram</a><br /><br />
+				<a href="">X</a>
+			</div>
+		</footer>
+		<div id="lastdiv">
+			<p>&copy;2024| Created by Saad&Taha| All rights reserved</p>
+		</div>
+		<script src="scripts/index.js"></script>
+		<div id="menu">
+			<% if (!user) { %>
+			<a href="/signup"
+				><button class="profile_case">
+					<svg
+						width="18px"
+						height="18px"
+						fill="#000000"
+						viewBox="0 0 16 16"
+						id="register-16px"
+						xmlns="http://www.w3.org/2000/svg"
+						data-darkreader-inline-fill=""
+						style="
+							--darkreader-inline-fill: var(
+								--darkreader-background-000000,
+								#000000
+							);
+						"
+					>
+						<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+						<g
+							id="SVGRepo_tracerCarrier"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						></g>
+						<g id="SVGRepo_iconCarrier">
+							<path
+								id="Path_184"
+								data-name="Path 184"
+								d="M57.5,41a.5.5,0,0,0-.5.5V43H47V31h2v.5a.5.5,0,0,0,.5.5h5a.5.5,0,0,0,.5-.5V31h2v.5a.5.5,0,0,0,1,0v-1a.5.5,0,0,0-.5-.5H55v-.5A1.5,1.5,0,0,0,53.5,28h-3A1.5,1.5,0,0,0,49,29.5V30H46.5a.5.5,0,0,0-.5.5v13a.5.5,0,0,0,.5.5h11a.5.5,0,0,0,.5-.5v-2A.5.5,0,0,0,57.5,41ZM50,29.5a.5.5,0,0,1,.5-.5h3a.5.5,0,0,1,.5.5V31H50Zm11.854,4.646-2-2a.5.5,0,0,0-.708,0l-6,6A.5.5,0,0,0,53,38.5v2a.5.5,0,0,0,.5.5h2a.5.5,0,0,0,.354-.146l6-6A.5.5,0,0,0,61.854,34.146ZM54,40V38.707l5.5-5.5L60.793,34.5l-5.5,5.5Zm-2,.5a.5.5,0,0,1-.5.5h-2a.5.5,0,0,1,0-1h2A.5.5,0,0,1,52,40.5Zm0-3a.5.5,0,0,1-.5.5h-2a.5.5,0,0,1,0-1h2A.5.5,0,0,1,52,37.5ZM54.5,35h-5a.5.5,0,0,1,0-1h5a.5.5,0,0,1,0,1Z"
+								transform="translate(-46 -28)"
+							></path>
+						</g>
+					</svg>
+
+					Sign up
+				</button></a
+			>
+			<a href="/login"
+				><button class="profile_case">
+					<svg
+						width="18px"
+						height="18px"
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="#000000"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						data-darkreader-inline-stroke=""
+						style="
+							--darkreader-inline-stroke: var(
+								--darkreader-text-000000,
+								#e8e6e3
+							);
+						"
+					>
+						<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+						<g
+							id="SVGRepo_tracerCarrier"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						></g>
+						<g id="SVGRepo_iconCarrier">
+							<path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"></path>
+							<polyline points="10 17 15 12 10 7"></polyline>
+							<line x1="15" y1="12" x2="3" y2="12"></line>
+						</g>
+					</svg>
+
+					Log in
+				</button></a
+			>
+
+			<% } else { %>
+
+			<a href="/profile"
+				><button class="profile_case">
+					<svg
+						width="18px"
+						height="18px"
+						viewBox="0 0 24 24"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+						<g
+							id="SVGRepo_tracerCarrier"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						></g>
+						<g id="SVGRepo_iconCarrier">
+							<path
+								fill-rule="evenodd"
+								clip-rule="evenodd"
+								d="M16.5 7.063C16.5 10.258 14.57 13 12 13c-2.572 0-4.5-2.742-4.5-5.938C7.5 3.868 9.16 2 12 2s4.5 1.867 4.5 5.063zM4.102 20.142C4.487 20.6 6.145 22 12 22c5.855 0 7.512-1.4 7.898-1.857a.416.416 0 0 0 .09-.317C19.9 18.944 19.106 15 12 15s-7.9 3.944-7.989 4.826a.416.416 0 0 0 .091.317z"
+								fill="#000000"
+								data-darkreader-inline-fill=""
+								style="
+									--darkreader-inline-fill: var(
+										--darkreader-background-000000,
+										#000000
+									);
+								"
+							></path>
+						</g>
+					</svg>
+
+					Profile
+				</button></a
+			>
+			<a href="/logout">
+				<button class="profile_case" style="font-size: large">
+					<svg
+						width="18px"
+						height="18px"
+						viewBox="0 0 24 24"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+						<g
+							id="SVGRepo_tracerCarrier"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						></g>
+						<g id="SVGRepo_iconCarrier">
+							<path
+								d="M12.9999 2C10.2385 2 7.99991 4.23858 7.99991 7C7.99991 7.55228 8.44762 8 8.99991 8C9.55219 8 9.99991 7.55228 9.99991 7C9.99991 5.34315 11.3431 4 12.9999 4H16.9999C18.6568 4 19.9999 5.34315 19.9999 7V17C19.9999 18.6569 18.6568 20 16.9999 20H12.9999C11.3431 20 9.99991 18.6569 9.99991 17C9.99991 16.4477 9.55219 16 8.99991 16C8.44762 16 7.99991 16.4477 7.99991 17C7.99991 19.7614 10.2385 22 12.9999 22H16.9999C19.7613 22 21.9999 19.7614 21.9999 17V7C21.9999 4.23858 19.7613 2 16.9999 2H12.9999Z"
+								fill="#000000"
+							></path>
+							<path
+								d="M13.9999 11C14.5522 11 14.9999 11.4477 14.9999 12C14.9999 12.5523 14.5522 13 13.9999 13V11Z"
+								fill="#000000"
+							></path>
+							<path
+								d="M5.71783 11C5.80685 10.8902 5.89214 10.7837 5.97282 10.682C6.21831 10.3723 6.42615 10.1004 6.57291 9.90549C6.64636 9.80795 6.70468 9.72946 6.74495 9.67492L6.79152 9.61162L6.804 9.59454L6.80842 9.58848C6.80846 9.58842 6.80892 9.58778 5.99991 9L6.80842 9.58848C7.13304 9.14167 7.0345 8.51561 6.58769 8.19098C6.14091 7.86637 5.51558 7.9654 5.19094 8.41215L5.18812 8.41602L5.17788 8.43002L5.13612 8.48679C5.09918 8.53682 5.04456 8.61033 4.97516 8.7025C4.83623 8.88702 4.63874 9.14542 4.40567 9.43937C3.93443 10.0337 3.33759 10.7481 2.7928 11.2929L2.08569 12L2.7928 12.7071C3.33759 13.2519 3.93443 13.9663 4.40567 14.5606C4.63874 14.8546 4.83623 15.113 4.97516 15.2975C5.04456 15.3897 5.09918 15.4632 5.13612 15.5132L5.17788 15.57L5.18812 15.584L5.19045 15.5872C5.51509 16.0339 6.14091 16.1336 6.58769 15.809C7.0345 15.4844 7.13355 14.859 6.80892 14.4122L5.99991 15C6.80892 14.4122 6.80897 14.4123 6.80892 14.4122L6.804 14.4055L6.79152 14.3884L6.74495 14.3251C6.70468 14.2705 6.64636 14.1921 6.57291 14.0945C6.42615 13.8996 6.21831 13.6277 5.97282 13.318C5.89214 13.2163 5.80685 13.1098 5.71783 13H13.9999V11H5.71783Z"
+								fill="#000000"
+							></path>
+						</g>
+					</svg>
+
+					Logout
+				</button>
+			</a>
+
+			<% } %>
+		</div>
+	</body>
 </html>

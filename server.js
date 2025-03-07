@@ -1,437 +1,573 @@
-const stripe = require('stripe');
-const dotenv = require('dotenv');
+const stripe = require("stripe");
+const dotenv = require("dotenv");
 dotenv.config();
-const express = require('express');
-const ejs =  require('ejs');
-const bodyparser = require('body-parser');
-const mysql = require('mysql2');
-const mysql2 = require('mysql2/promise');
+const express = require("express");
+const ejs = require("ejs");
+const bodyparser = require("body-parser");
+const mysql = require("mysql2");
+const mysql2 = require("mysql2/promise");
 const app = express();
-const session = require('express-session');
-const bodyParser = require('body-parser');
-const bcrypt = require('bcrypt');
-app.use(bodyparser.urlencoded({extended:true}));
-app.use(session({
-    secret: 'your_secret_key',
-    resave: false,
-    saveUninitialized: true
-}));
+const session = require("express-session");
+const bodyParser = require("body-parser");
+const bcrypt = require("bcrypt");
+
+app.use(bodyparser.urlencoded({ extended: true }));
+app.use(
+	session({
+		secret: "your_secret_key",
+		resave: false,
+		saveUninitialized: true,
+	})
+);
+
+dbConfig = {
+	host: "localhost",
+	user: "root",
+
+	database: "square",
+};
 
 const con = mysql.createConnection({
-    host:'localhost',
-    user:'root',
-    password:'',
-    database:'square',
+	host: "localhost",
+	user: "root",
+
+	database: "square",
 });
 
-app.use(express.static('public'));
-app.set('view engine','ejs');
+app.use(express.static("public"));
+app.set("view engine", "ejs");
 
+app.use((req, res, next) => {
+	res.locals.flash = req.session.flash;
+	delete req.session.flash; // Clear after displaying
+	next();
+});
 
-
-app.listen(3000,()=>{
-    console.log('Listening to port 3000... ');
+app.listen(3000, () => {
+	console.log("Server running on port http://localhost:3000 ");
 });
 //localhost:3000
-app.get('/',function(req,res){
-    
-    console.log('connected to db successfully...');
-    con.query("SELECT * FROM products",(err,result)=>{
-        if (err) {
-            console.error("Error fetching data from the database:", err);
-            return;
-        }else{
-            
-            res.render('pages/index',{result:result});
-            console.log('got items from db succesfully');
-        }
-        
-    });
-    
-    
+app.get("/", function (req, res) {
+	console.log("connected to db successfully...");
+	con.query("SELECT * FROM products", (err, result) => {
+		if (err) {
+			console.error("Error fetching data from the database:", err);
+			return;
+		} else {
+			res.render("pages/index", { result: result, user: req.session.user });
+			console.log("got items from db succesfully");
+		}
+	});
 });
-app.get('/index',function(req,res){
-    
-    
-    con.query("SELECT * FROM products",(err,result)=>{
-        if (err) {
-            console.error("Error fetching data from the database:", err);
-            return;
-        }else{
-            
-            res.render('pages/index',{result:result});
-            console.log('got items from db succesfully');
-        }
-        
-    });
+app.get("/index", function (req, res) {
+	con.query("SELECT * FROM products", (err, result) => {
+		if (err) {
+			console.error("Error fetching data from the database:", err);
+			return;
+		} else {
+			res.render("pages/index", { result: result, user: req.session.user });
+			console.log("got items from db succesfully");
+		}
+	});
 });
 
-app.get('/product_info',function(req,res){
-    
-    const infos = req.session.productInfo;
+app.get("/product_info", function (req, res) {
+	const infos = req.session.productInfo;
 
-    if (!infos) {console.log(infos);
-        return res.redirect('/'); // If no product info in session, redirect to home
-      }
-      
-      
-    res.render('pages/product_info',{product:infos});
+	if (!infos) {
+		console.log(infos);
+		return res.redirect("/"); // If no product info in session, redirect to home
+	}
+
+	res.render("pages/product_info", { product: infos, user: req.session.user });
 });
-app.post('/product_info', function(req, res) {
-    
-    req.session.productInfo = { 
-        id:req.body.id,
-        img: req.body.img,
-        title: req.body.title, 
-        price: req.body.price 
-    };
-    
-    res.redirect('/product_info');
+app.post("/product_info", function (req, res) {
+	req.session.productInfo = {
+		id: req.body.id,
+		img: req.body.img,
+		title: req.body.title,
+		price: req.body.price,
+	};
+
+	res.redirect("/product_info");
 });
 
-function isProductInCart(cart,id){
-    for(let i=0 ; i<cart.length ; i++){
+function isProductInCart(cart, id) {
+	cart.forEach((c) => {
+		if (c.id == id) return true;
+	});
+	return false;
+}
 
-        if(cart[i].id==id){
-        return true;
+function calculatetotal(cart, req) {
+	let total = 0;
+	for (let i = 0; i < cart.length; i++) {
+		total += cart[i].price * cart[i].quantity;
+	}
+	req.session.total = total;
+	return total;
+}
+app.get("/cart", function (req, res) {
+	// Initialize cart and total if not already set
+	if (!req.session.cart) {
+		req.session.cart = []; // Initialize as an empty array
+	}
 
-    }
-    }
-    return false;
-    };
+	if (!req.session.total) {
+		req.session.total = 0; // Initialize as 0
+	}
 
+	let cart = req.session.cart;
+	let total = req.session.total;
 
-    function calculatetotal(cart, req) {
-        let total = 0;
-        for (let i = 0; i < cart.length; i++) { 
-            total += cart[i].price * cart[i].quantity; 
-        }
-        req.session.total = total; 
-        return total;
-    }
-    app.get('/cart', function(req, res) {
-        // Initialize cart and total if not already set
-        if (!req.session.cart) {
-            req.session.cart = []; // Initialize as an empty array
-        }
-    
-        if (!req.session.total) {
-            req.session.total = 0; // Initialize as 0
-        }
-    
-        let cart = req.session.cart;
-        let total = req.session.total;
-    
-        res.render('pages/cart', { cart: cart, total: total });
-    });
-    
+	res.render("pages/cart", {
+		cart: cart,
+		total: total,
+		user: req.session.user,
+	});
+});
 
+app.post("/quan", (req, res) => {
+	req.session.quantity = parseInt(req.body);
+});
 
-    app.post('/add', function (req, res) {
-        const id = req.body.id;
-        const price = parseFloat(req.body.price); 
-        const name = req.body.title;
-        const quantity = parseInt(req.body.quantity); 
-        const img = req.body.img;
-    
-        const product = { id: id, price: price, name: name, quantity: quantity, img: img };
-    
-        // Initialize cart if it doesn't exist
-        if (!req.session.cart) {
-            req.session.cart = [];
-        }
-    
-        const cart = req.session.cart;
-    
-        
-        if (!isProductInCart(cart, product.id)) {
-            cart.push(product); 
-        } else {
-            // Update quantity of the existing product
-            cart.forEach(item => {
-                if (item.id === product.id) {
-                    item.quantity += product.quantity; // Increment quantity
-                }
-            });
-        }
-    
-       
-         calculatetotal(cart, req);
-    
-        
-        res.redirect('/cart');
-    });
-    
-    app.post('/cart/delete', function (req, res) {
-        const productId = req.body.id;
-    
-        if (req.session.cart) {
-            // Remove the product with the matching ID
-            req.session.cart = req.session.cart.filter(product => product.id !== productId);
-    
-            
-            calculatetotal(req.session.cart, req);
-        }
-    
-        res.redirect('/cart'); 
-    });
-    
-    
+app.post("/add", function (req, res) {
+	if (req.session.user) {
+		const id = req.body.id;
+		const price = parseFloat(req.body.price);
+		const name = req.body.title;
+		const quantity = req.body.quantity;
+		const img = req.body.img;
 
-app.get('/checkout',(req,res)=>{
-    // let haveacc = req.session.haveacc;
-    // if(haveacc){
-    //   res.render('pages/checkout')  
-    // }
-    // else{
-    //     res.redirect('pages/umustsignup');
-    // }
-    res.render('pages/checkout') 
-})
-app.post('/place_order',(req,res)=>{
+		const product = {
+			id: id,
+			price: price,
+			name: name,
+			quantity: quantity,
+			img: img,
+		};
 
-})
+		// Initialize cart if it doesn't exist
+		if (!req.session.cart) {
+			req.session.cart = [];
+		}
 
+		const cart = req.session.cart;
+
+		if (!isProductInCart(cart, product.id)) {
+			cart.push(product);
+		} else {
+			// Update quantity of the existing product
+			cart.forEach((item) => {
+				if (item.id === product.id) {
+					item.quantity += product.quantity; // Increment quantity
+				}
+			});
+		}
+
+		calculatetotal(cart, req);
+
+		res.redirect("/cart");
+	} else {
+		req.session.flash = { type: "fail", message: "Login to place an order" };
+		res.redirect("/login");
+	}
+});
+
+app.post("/fastadd", function (req, res) {
+	if (req.session.user) {
+		const id = req.body.id;
+		const price = parseFloat(req.body.price);
+		const name = req.body.title;
+
+		const quantity = req.body.quantity;
+		const img = req.body.img;
+
+		const product = {
+			id: id,
+			price: price,
+			name: name,
+			quantity: quantity,
+			img: img,
+		};
+		console.log(product);
+
+		// Initialize cart if it doesn't exist
+		if (!req.session.cart) {
+			req.session.cart = [];
+		}
+
+		const cart = req.session.cart;
+
+		if (!isProductInCart(cart, product.id)) {
+			cart.push(product);
+		} else {
+			// Update quantity of the existing product
+			cart.forEach((item) => {
+				if (item.id === product.id) {
+					item.quantity += product.quantity; // Increment quantity
+				}
+			});
+		}
+
+		calculatetotal(cart, req);
+		req.session.flash = { type: "success", message: "Item added to cart !" };
+		res.redirect("/");
+	} else {
+		req.session.flash = { type: "fail", message: "Login to place an order" };
+		res.redirect("/login");
+	}
+});
+
+app.post("/cart/delete", function (req, res) {
+	const productId = req.body.id;
+
+	if (req.session.cart) {
+		// Remove the product with the matching ID
+		req.session.cart = req.session.cart.filter(
+			(product) => product.id !== productId
+		);
+
+		calculatetotal(req.session.cart, req);
+	}
+	req.session.flash = { type: "success", message: "Item removed from cart !" };
+	res.redirect("/cart");
+});
+
+app.get("/checkout", (req, res) => {
+	// let haveacc = req.session.haveacc;
+	// if(haveacc){
+	//   res.render('pages/checkout')
+	// }
+	// else{
+	//     res.redirect('pages/umustsignup');
+	// }
+	res.render("pages/checkout");
+});
+app.post("/place_order", (req, res) => {});
 
 const domain = process.env.domain;
 const stripegateway = stripe(process.env.stripe_api);
-app.post('/checkout',async (req,res)=>{
-    const lineItems = req.session.cart.map((item)=>{
-        const unitAmount = Math.round(parseFloat(item.price) * 100);
-        if (isNaN(unitAmount)) {
-            throw new Error(`Invalid price for item: ${JSON.stringify(item)}`);
-        }
+app.post("/checkout", async (req, res) => {
+	const lineItems = req.session.cart.map((item) => {
+		const unitAmount = Math.round(parseFloat(item.price) * 100);
+		if (isNaN(unitAmount)) {
+			throw new Error(`Invalid price for item: ${JSON.stringify(item)}`);
+		}
 
-        const imgs = `styles/images/${item.img}`;
-        console.log('item-price',item.price);
-        if (!item.img) {
-            console.error('Missing image for item:', item);
-        }
-        console.log('inutAmount',unitAmount);
-        return{
-            price_data:{
-                currency:'mad',
-                product_data:{
-                    name:item.name,
-                    images:[imgs]
-                },
-                unit_amount:unitAmount,
-            },
-            quantity:item.quantity,
-        };
-        
-    });
-    
+		const imgs = `${item.img}`;
+		console.log("item-price", item.price);
+		if (!item.img) {
+			console.error("Missing image for item:", item);
+		}
+		console.log("inutAmount", unitAmount);
+		return {
+			price_data: {
+				currency: "mad",
+				product_data: {
+					name: item.name,
+					images: [imgs],
+				},
+				unit_amount: unitAmount,
+			},
+			quantity: item.quantity,
+		};
+	});
 
-    console.log('lineItems:',lineItems);
+	console.log("lineItems:", lineItems);
 
-
-    //create checkout session 
-    const session = await stripegateway.checkout.sessions.create({
-        payment_method_types:['card'],
-        mode:'payment',
-        success_url:`${domain}/success`,
-        cancel_url:`${domain}/cart`,
-        line_items:lineItems,
-
-    });
-    console.log(session.url);
-    res.redirect( session.url );
+	//create checkout session
+	const session = await stripegateway.checkout.sessions.create({
+		payment_method_types: ["card"],
+		mode: "payment",
+		success_url: `${domain}/success`,
+		cancel_url: `${domain}/cart`,
+		line_items: lineItems,
+	});
+	console.log(session.url);
+	res.redirect(session.url);
 });
 
 //succes get
-app.get('/success', async (req,res)=>{
-    const conn = {
-        host: 'localhost',
-        user: 'test',
-        password: 'test',
-        database: 'square',
-    };
-    let connection = await mysql2.createConnection(conn);
-    connection.execute('INSERT INTO orders')
+app.get("/success", async (req, res) => {
+	try {
+		const conn = {
+			host: "localhost",
+			user: "test",
+			password: "test",
+			database: "square",
+		};
+		let connection = await mysql2.createConnection(conn);
 
-    req.session.cart = [];
-    req.session.total = 0;
+		// Ensure session variables exist
+		if (!req.session.user || !req.session.cart) {
+			req.session.flash = {
+				type: "error",
+				message: "Session expired. Try again!",
+			};
+			return res.redirect("/");
+		}
 
+		// Insert order
+		const [result] = await connection.execute(
+			"INSERT INTO orders (user_id, cost, name, email) VALUES (?, ?, ?, ?)",
+			[
+				req.session.user.id,
+				req.session.total,
+				req.session.user.user,
+				req.session.user.email, // Changed from req.session.email
+			]
+		);
 
-    res.render('pages/success');
+		// Insert order items
+		for (const item of req.session.cart) {
+			await connection.execute(
+				`INSERT INTO orders_items (order_id, product_id, product_name, product_price, product_img, product_quantity) 
+				 VALUES (?, ?, ?, ?, ?, ?)`,
+				[
+					result.insertId,
+					item.id,
+					item.name,
+					item.price,
+					item.img,
+					item.quantity,
+				]
+			);
+		}
+
+		// Clear session data
+		req.session.cart = [];
+		req.session.total = 0;
+
+		// Set success message
+		req.session.flash = { type: "success", message: "Payment successful!" };
+
+		// Close connection
+		await connection.end();
+
+		// Redirect to homepage
+		res.redirect("/");
+	} catch (error) {
+		console.error("Error processing order:", error);
+		req.session.flash = {
+			type: "error",
+			message: "An error occurred. Please try again.",
+		};
+		res.redirect("/");
+	}
 });
-app.get('/cancel',(req,res)=>{
-    res.render('pages/cancel');
+
+app.get("/cancel", (req, res) => {
+	res.render("pages/cancel");
 });
-app.get('/cart-items', (req, res) => {
-    res.json({ cart: req.session.cart || [] });
-  });
-
-
-
+app.get("/cart-items", (req, res) => {
+	res.json({ cart: req.session.cart || [] });
+});
 
 // Route for handling POST requests
-app.post('/register', async (req, res) => {
-    const { user: username, email, mdp } = req.body;
-    
-    const conn = {
-        host: 'localhost',
-        user: 'test',
-        password: 'test',
-        database: 'square',
-    };
-    
+app.post("/register", async (req, res) => {
+	const { user: username, email, mdp } = req.body;
 
-    let connection;
-    try {
-      // Establish database connection
-      connection = await mysql2.createConnection(conn);
-  
-      // Check if the email already exists
-      const [emailExists] = await connection.execute(
-        'SELECT email FROM users WHERE email = ?',
-        [email]
-      );
-  
-      if (emailExists.length > 0) {
-        return res.redirect('/email_alr');
-      }
-  
-      // Check if the username already exists
-      const [userExists] = await connection.execute(
-        'SELECT user FROM users WHERE user = ?',
-        [username]
-      );
-  
-      if (userExists.length > 0) {
-        
-        return res.redirect('/user_alr');
-      }
-  
-      // Hash the password
-      const hashedPassword = await bcrypt.hash(mdp, 10);
-  
-      // Insert new user into the database
-      const [result] = await connection.execute(
-        'INSERT INTO users (user, email, mdp) VALUES (?, ?, ?)',
-        [username, email, hashedPassword]
-      );
-        req.session.email= email;
-  
-      if (result.affectedRows > 0) {
-        return res.redirect('/urin');
-      } else {
-        return res.redirect('/regi_failed');
-      }
-    } catch (err) {
-      console.error('Server error:', err);
-      return res.status(500).send('Server error.');
-    } finally {
-      // Ensure the database connection is always closed
-      if (connection) {
-        await connection.end();
-      }
-    }
-  });
+	const conn = {
+		host: "localhost",
+		user: "test",
+		password: "test",
+		database: "square",
+	};
 
-app.get('/signup',(req,res)=>{
-    res.render('pages/signup');
-})
-app.get('/urin', async (req, res) => {
-    // Check if the user is logged in (session exists)
-    if (!req.session.email) {
-        return res.redirect('/login'); // Redirect to login if no session
-    }
+	let connection;
+	try {
+		// Establish database connection
+		connection = await mysql2.createConnection(conn);
 
-    const email = req.session.email; // Get email from session
+		// Check if the email already exists
+		const [emailExists] = await connection.execute(
+			"SELECT email FROM users WHERE email = ?",
+			[email]
+		);
 
-    try {
-        // Create a database connection
-        const connection = await mysql2.createConnection(dbConfig);
+		if (emailExists.length > 0) {
+			req.session.flash = { type: "fail", message: "Email already exists" };
+			return res.redirect("/signup");
+		}
 
-        // Query to fetch the user ID
-        const [rows] = await connection.execute('SELECT id FROM users WHERE email = ?', [email]);
+		// Check if the username already exists
+		const [userExists] = await connection.execute(
+			"SELECT user FROM users WHERE user = ?",
+			[username]
+		);
 
-        // Check if a user was found
-        if (rows.length > 0) {
-            req.session.Id = rows[0].id; // Store the user ID in the session
-        } else {
-            return res.status(404).send('User not found'); // Handle case where user doesn't exist
-        }
+		if (userExists.length > 0) {
+			req.session.flash = { type: "fail", message: "Username already exists" };
+			return res.redirect("/signup");
+		}
 
-        // Close the connection
-        await connection.end();
+		// Hash the password
+		const hashedPassword = await bcrypt.hash(mdp, 10);
 
-        // Render the 'urin' page
-        res.render('pages/urin');
-    } catch (error) {
-        console.error('Database error:', error);
-        res.status(500).send('Internal Server Error');
-    }
+		// Insert new user into the database
+		const [result] = await connection.execute(
+			"INSERT INTO users (user, email, mdp) VALUES (?, ?, ?)",
+			[username, email, hashedPassword]
+		);
+
+		const [rows] = await connection.execute(
+			"SELECT * FROM users WHERE email = ?",
+			[email]
+		);
+
+		req.session.email = email;
+		req.session.user = rows[0];
+		if (result.affectedRows > 0) {
+			let WelcoemMsg = "Welcome " + username;
+			req.session.flash = { type: "success", message: WelcoemMsg };
+			return res.redirect("/");
+		} else {
+			req.session.flash = {
+				type: "fail",
+				message: "Registration failed try again ",
+			};
+			return res.redirect("/signup");
+		}
+	} catch (err) {
+		console.error("Server error:", err);
+		return res.status(500).send("Server error.");
+	} finally {
+		// Ensure the database connection is always closed
+		if (connection) {
+			await connection.end();
+		}
+	}
 });
 
-app.get('/regi_failed',(req,res)=>{
-    res.render('pages/regi_failed');
-});
-app.get('/user_alr',(req,res)=>{
-    const email_alr ='Username already exists ';
-    res.render('pages/regi_failed',{email_alr});
-})
-app.get('/email_alr',(req,res)=>{
-    const email_alr ='Email already exists ';
-    res.render('pages/regi_failed',{email_alr});
-})
-app.get('/login',(req,res)=>{
-    res.render('pages/login');
+app.get("/signup", (req, res) => {
+	res.render("pages/signup");
 });
 
-app.post('/login', async (req, res) => {
-    const { email, mdp } = req.body;
-
-    const conn = {
-        host: 'localhost',
-        user: 'test',
-        password: 'test',
-        database: 'square',
-    };
-
-    try {
-        // Create a connection to the database
-        const connection = await mysql2.createConnection(conn);
-
-        // Query to fetch the hashed password for the given email
-        const [rows] = await connection.execute(
-            'SELECT mdp FROM users WHERE email = ?',
-            [email]
-        );
-
-        if (rows.length > 0) {
-            const user = rows[0];
-            const hashedPassword = user.mdp;
-
-            // Verify the password
-            const isPasswordValid = await bcrypt.compare(mdp, hashedPassword);
-            if (isPasswordValid) {
-                res.redirect('/urin');
-            } else {
-                res.redirect('/mdpincorrect');
-            }
-        } else {
-            // Email not found
-            res.redirect('/email_notfound');
-        }
-
-        // Close the connection
-        await connection.end();
-    } catch (error) {
-        console.error('Database error:', error);
-        res.status(500).send('Database error');
-    }
+app.get("/login", (req, res) => {
+	res.render("pages/login");
 });
-app.get('/emailnotfound',(req,res)=>{
-    let text = 'email not found';
-    res.render('pages/mdp_i',{text});
+
+app.post("/login", async (req, res) => {
+	const email = req.body.email;
+	const mdp = req.body.mdp;
+
+	const conn = {
+		host: "localhost",
+		user: "test",
+		password: "test",
+		database: "square",
+	};
+
+	try {
+		const connection = await mysql2.createConnection(conn);
+
+		const [rows] = await connection.execute(
+			"SELECT * FROM users WHERE email = ?",
+			[email]
+		);
+
+		if (rows.length > 0) {
+			const user = rows[0];
+			const hashedPassword = user.mdp;
+			req.session.user = user;
+			console.log(user);
+			console.log(req.session.user);
+			let WelcomeMsg = "Welcome " + user.user;
+			// Verify the password
+			const isPasswordValid = await bcrypt.compare(mdp, hashedPassword);
+			if (isPasswordValid) {
+				req.session.flash = { type: "success", message: WelcomeMsg };
+				res.redirect("/");
+			} else {
+				req.session.flash = { type: "fail", message: "Password invalid" };
+				res.redirect("/login");
+			}
+		} else {
+			// Email not found
+			req.session.flash = { type: "fail", message: "Email invalid" };
+			res.redirect("/login");
+		}
+
+		// Close the connection
+		await connection.end();
+	} catch (error) {
+		console.error("Database error:", error);
+		res.status(500).send("Database error");
+	}
 });
-app.get('/mdpincorrect',(req,res)=>{
-    let text = 'mdp incorrect';
-    res.render('pages/mdp_i',{text});
+
+app.get("/login", (req, res) => {
+	res.render("pages/login");
 });
-app.get('/login',(req,res)=>{
-    res.render('pages/login');
-})
+app.get("/profile", async (req, res) => {
+	// Initialize userInfo
+	let userInfo = {};
+	if (req.session.user) {
+		const date = req.session.user.regi_time;
+
+		userInfo = {
+			id: req.session.user.id, // Ensure this is the correct property
+			user: req.session.user.user,
+			email: req.session.user.email,
+			regi_time: date.substring(0, 10),
+		};
+	}
+
+	// Check if user is logged in
+	if (!req.session.user) {
+		return res.status(401).send("User not logged in or session expired");
+	}
+
+	// Database connection
+	const conn = {
+		host: "localhost",
+		user: "test",
+		password: "test",
+		database: "square",
+	};
+
+	let connection;
+	let orders_items = []; // Declare orders_items here
+
+	try {
+		connection = await mysql2.createConnection(conn);
+
+		// Fetch user orders
+		const [orders] = await connection.execute(
+			"SELECT * FROM orders WHERE user_id = ?",
+			[userInfo.id]
+		);
+
+		// Fetch items for each order
+		for (const order of orders) {
+			const [items] = await connection.execute(
+				"SELECT * FROM orders_items WHERE order_id = ?",
+				[order.id]
+			);
+			orders_items.push(...items);
+		}
+
+		// Render the profile page
+		res.render("pages/profile", {
+			user: userInfo,
+			orders: orders,
+			items: orders_items,
+		});
+	} catch (error) {
+		console.error("Error fetching profile data:", error);
+		res.status(500).send("Internal Server Error");
+	} finally {
+		// Close the database connection
+		if (connection) {
+			await connection.end();
+		}
+	}
+});
+
+app.get("/logout", (req, res) => {
+	req.session.user = false;
+	console.log("logging out");
+	req.session.flash = { type: "success", message: "You have logged out !" };
+	res.redirect("/index");
+});

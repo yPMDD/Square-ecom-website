@@ -4,11 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles/login.css">
+    <script
+			src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+			defer
+		></script>
     <link rel="icon" href="styles/images/no_bg.png" type="image/x-icon">
+    
     <title>Square | Login</title>
 </head>
 <body>
-    
+    <% if (flash) { %>
+        <!-- x-init="setTimeout(() => show = false, 2500)" -->
+        <div
+           x-init="setTimeout(() => show = false, 2500)"
+            x-data="{ show: true }"
+            x-show="show"
+            x-transition.duration.500ms
+            @click.away="show = false"
+            class="fm"
+            style="background-color: 
+            <%= flash.type === 'success' ? '#499b68' : '#ec5316' %> ;"
+        >
+            <p><%= flash.message %></p>
+        </div>
+        <% } %>
     <div class="box">
         <div class="boks">
 <img src="styles/images//1732832232686.png" alt="E mdwra" class="E_mdwra">
@@ -39,5 +58,6 @@
         </div>
 
         </form>
-</body>
+</body> 
 </html>
+ 
