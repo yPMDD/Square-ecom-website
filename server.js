@@ -38,6 +38,17 @@ app.use(express.static("public"));
 app.set("view engine", "ejs");
 
 app.use((req, res, next) => {
+	// Initialize session cart and count if they don't exist
+	if (!req.session.cart) {
+		req.session.cart = [];
+	}
+	if (req.session.count === undefined) {
+		req.session.count = req.session.cart.length;
+	}
+	next();
+});
+
+app.use((req, res, next) => {
 	res.locals.flash = req.session.flash;
 	delete req.session.flash; // Clear after displaying
 	next();
@@ -54,11 +65,12 @@ app.get("/", function (req, res) {
 			console.error("Error fetching data from the database:", err);
 			return;
 		} else {
-			if (!req.session.cart) {
-				req.session.cart = []; // Initialize cart if undefined
-			}
 			req.session.cartCount = req.session.cart.length;
-			res.render("pages/index", { result: result, user: req.session.user });
+			res.render("pages/index", {
+				result: result,
+				user: req.session.user,
+				count: req.session.count,
+			});
 			console.log("got items from db succesfully");
 		}
 	});
@@ -69,14 +81,11 @@ app.get("/index", function (req, res) {
 			console.error("Error fetching data from the database:", err);
 			return;
 		} else {
-			if (!req.session.cart) {
-				req.session.cart = []; // Initialize cart if undefined
-			}
-			req.session.cartCount = req.session.cart.length;
+			req.session.count = req.session.cart.length;
 			res.render("pages/index", {
 				result: result,
 				user: req.session.user,
-				count: req.session.cartCount,
+				count: req.session.count,
 			});
 			console.log("got items from db succesfully");
 		}
@@ -86,19 +95,15 @@ app.get("/index", function (req, res) {
 app.get("/product_info", function (req, res) {
 	const infos = req.session.productInfo;
 
-	if (!req.session.cart) {
-		req.session.cart = []; // Initialize cart if undefined
-	}
-	req.session.cartCount = req.session.cart.length;
 	if (!infos) {
 		console.log(infos);
 		return res.redirect("/"); // If no product info in session, redirect to home
 	}
-
+	req.session.count = req.session.cart.length;
 	res.render("pages/product_info", {
 		product: infos,
 		user: req.session.user,
-		count: req.session.cartCount,
+		count: req.session.count,
 	});
 });
 app.post("/product_info", function (req, res) {
@@ -108,7 +113,7 @@ app.post("/product_info", function (req, res) {
 		title: req.body.title,
 		price: req.body.price,
 	};
-
+	req.session.count = req.session.cart.length;
 	res.redirect("/product_info");
 });
 
@@ -129,9 +134,6 @@ function calculatetotal(cart, req) {
 }
 app.get("/cart", function (req, res) {
 	// Initialize cart and total if not already set
-	if (!req.session.cart) {
-		req.session.cart = []; // Initialize as an empty array
-	}
 
 	if (!req.session.total) {
 		req.session.total = 0; // Initialize as 0
@@ -140,12 +142,12 @@ app.get("/cart", function (req, res) {
 	let cart = req.session.cart;
 	let total = req.session.total;
 
-	req.session.cartCount = req.session.cart.length;
+	req.session.count = req.session.cart.length;
 	res.render("pages/cart", {
 		cart: cart,
 		total: total,
 		user: req.session.user,
-		count: req.session.cartCount,
+		count: req.session.count,
 	});
 });
 
@@ -188,9 +190,10 @@ app.post("/add", function (req, res) {
 		}
 
 		calculatetotal(cart, req);
-
+		req.session.count = req.session.cart.length;
 		res.redirect("/cart");
 	} else {
+		req.session.count = req.session.cart.length;
 		req.session.flash = { type: "fail", message: "Login to place an order" };
 		res.redirect("/login");
 	}
@@ -236,6 +239,7 @@ app.post("/fastadd", function (req, res) {
 		req.session.flash = { type: "success", message: "Item added to cart !" };
 		res.redirect("/");
 	} else {
+		req.session.count = req.session.cart.length;
 		req.session.flash = { type: "fail", message: "Login to place an order" };
 		res.redirect("/login");
 	}
@@ -252,6 +256,7 @@ app.post("/cart/delete", function (req, res) {
 
 		calculatetotal(req.session.cart, req);
 	}
+	req.session.count = req.session.cart.length;
 	req.session.flash = { type: "success", message: "Item removed from cart !" };
 	res.redirect("/cart");
 });
@@ -327,6 +332,7 @@ app.get("/success", async (req, res) => {
 				type: "error",
 				message: "Session expired. Try again!",
 			};
+			req.session.count = req.session.cart.length;
 			return res.redirect("/");
 		}
 
@@ -366,7 +372,7 @@ app.get("/success", async (req, res) => {
 
 		// Close connection
 		await connection.end();
-
+		req.session.count = req.session.cart.length;
 		// Redirect to homepage
 		res.redirect("/");
 	} catch (error) {
@@ -375,15 +381,9 @@ app.get("/success", async (req, res) => {
 			type: "error",
 			message: "An error occurred. Please try again.",
 		};
+		req.session.count = req.session.cart.length;
 		res.redirect("/");
 	}
-});
-
-app.get("/cancel", (req, res) => {
-	res.render("pages/cancel");
-});
-app.get("/cart-items", (req, res) => {
-	res.json({ cart: req.session.cart || [] });
 });
 
 // Route for handling POST requests
@@ -499,14 +499,17 @@ app.post("/login", async (req, res) => {
 			// Verify the password
 			const isPasswordValid = await bcrypt.compare(mdp, hashedPassword);
 			if (isPasswordValid) {
+				req.session.count = req.session.cart.length;
 				req.session.flash = { type: "success", message: WelcomeMsg };
 				res.redirect("/");
 			} else {
+				req.session.count = req.session.cart.length;
 				req.session.flash = { type: "fail", message: "Password invalid" };
 				res.redirect("/login");
 			}
 		} else {
 			// Email not found
+			req.session.count = req.session.cart.length;
 			req.session.flash = { type: "fail", message: "Email invalid" };
 			res.redirect("/login");
 		}
