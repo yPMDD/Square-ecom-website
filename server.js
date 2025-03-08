@@ -54,6 +54,10 @@ app.get("/", function (req, res) {
 			console.error("Error fetching data from the database:", err);
 			return;
 		} else {
+			if (!req.session.cart) {
+				req.session.cart = []; // Initialize cart if undefined
+			}
+			req.session.cartCount = req.session.cart.length;
 			res.render("pages/index", { result: result, user: req.session.user });
 			console.log("got items from db succesfully");
 		}
@@ -65,7 +69,15 @@ app.get("/index", function (req, res) {
 			console.error("Error fetching data from the database:", err);
 			return;
 		} else {
-			res.render("pages/index", { result: result, user: req.session.user });
+			if (!req.session.cart) {
+				req.session.cart = []; // Initialize cart if undefined
+			}
+			req.session.cartCount = req.session.cart.length;
+			res.render("pages/index", {
+				result: result,
+				user: req.session.user,
+				count: req.session.cartCount,
+			});
 			console.log("got items from db succesfully");
 		}
 	});
@@ -74,12 +86,20 @@ app.get("/index", function (req, res) {
 app.get("/product_info", function (req, res) {
 	const infos = req.session.productInfo;
 
+	if (!req.session.cart) {
+		req.session.cart = []; // Initialize cart if undefined
+	}
+	req.session.cartCount = req.session.cart.length;
 	if (!infos) {
 		console.log(infos);
 		return res.redirect("/"); // If no product info in session, redirect to home
 	}
 
-	res.render("pages/product_info", { product: infos, user: req.session.user });
+	res.render("pages/product_info", {
+		product: infos,
+		user: req.session.user,
+		count: req.session.cartCount,
+	});
 });
 app.post("/product_info", function (req, res) {
 	req.session.productInfo = {
@@ -120,10 +140,12 @@ app.get("/cart", function (req, res) {
 	let cart = req.session.cart;
 	let total = req.session.total;
 
+	req.session.cartCount = req.session.cart.length;
 	res.render("pages/cart", {
 		cart: cart,
 		total: total,
 		user: req.session.user,
+		count: req.session.cartCount,
 	});
 });
 
@@ -209,7 +231,7 @@ app.post("/fastadd", function (req, res) {
 				}
 			});
 		}
-
+		req.session.count = req.session.cart.length;
 		calculatetotal(cart, req);
 		req.session.flash = { type: "success", message: "Item added to cart !" };
 		res.redirect("/");
@@ -501,6 +523,10 @@ app.get("/login", (req, res) => {
 	res.render("pages/login");
 });
 app.get("/profile", async (req, res) => {
+	if (!req.session.cart) {
+		req.session.cart = []; // Initialize cart if undefined
+	}
+	req.session.cartCount = req.session.cart.length;
 	// Initialize userInfo
 	let userInfo = {};
 	if (req.session.user) {
@@ -553,6 +579,7 @@ app.get("/profile", async (req, res) => {
 			user: userInfo,
 			orders: orders,
 			items: orders_items,
+			count: req.session.cartCount,
 		});
 	} catch (error) {
 		console.error("Error fetching profile data:", error);
