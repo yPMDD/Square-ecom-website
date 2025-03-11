@@ -22,7 +22,7 @@ header {
 	left: -100%;
 	/* Equivalent to bg-green-500 in Tailwind */
 	color: white; /* Equivalent to text-white in Tailwind */
-	padding: 0rem 1rem; /* Equivalent to px-4 py-2 in Tailwind */
+	padding: 0.5rem 1.5rem; /* Equivalent to px-4 py-2 in Tailwind */
 	border-top-right-radius: 0.5rem; /* Rounds top-right corner */
 	border-bottom-right-radius: 0.5rem; /* Rounds bottom-right corner */
 	box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
@@ -37,8 +37,7 @@ header {
 		left: 0rem; /* Slide to 1rem from the left */
 	}
 }
-#cart a {
-}
+
 #cart span {
 	left: 60%;
 	background-color: #f69c14;
@@ -152,6 +151,7 @@ body {
 	display: flex;
 	animation: slide 12s infinite ease-in-out;
 	transition: transform 0.5s ease;
+	height: 365px;
 }
 
 @keyframes slide {
@@ -179,6 +179,7 @@ body {
 }
 
 #prev {
+	visibility: hidden;
 	height: 61.5%;
 	width: 4%;
 	position: absolute;
@@ -194,10 +195,12 @@ body {
 	transition: background-color 0.3s ease;
 }
 #prev:hover {
+	visibility: hidden;
 	background: linear-gradient(to right, black, transparent);
 }
 
 #next {
+	visibility: hidden;
 	height: 61.5%;
 	width: 4.5%;
 	position: absolute;
@@ -213,6 +216,7 @@ body {
 	transition: background-color 0.3s ease;
 }
 #next:hover {
+	visibility: hidden;
 	background: linear-gradient(to left, black, transparent);
 }
 
@@ -320,7 +324,7 @@ body {
 	color: white;
 	border-radius: 5px;
 	cursor: pointer;
-	width: 40px;
+
 	text-align: center;
 }
 
@@ -484,10 +488,14 @@ body {
 
 .product-description {
 	font-size: 14px;
-	color: #777;
-	margin-bottom: 15px;
+	font-weight: 600;
 }
-
+p {
+	margin-block-start: 0em;
+	margin-block-end: 0em;
+	margin-inline-start: 0px;
+	margin-inline-end: 0px;
+}
 .price {
 	display: flex;
 	align-items: center;
@@ -531,8 +539,8 @@ body {
 	background-color: transparent;
 }
 .mini {
-	padding: 8px;
 }
+
 #products {
 	width: 100%;
 	margin-bottom: 40px;
@@ -540,4 +548,45 @@ body {
 .card {
 	background-color: #fff;
 	padding: 5px;
+}
+
+.filters {
+	color: #c4c5c5;
+	font-family: inherit;
+	border: none;
+	text-transform: uppercase;
+	margin-bottom: 25px;
+	font-size: large;
+	position: relative;
+	padding: 5px;
+	padding-left: 20px;
+	padding-right: 20px;
+	cursor: pointer;
+	background: none;
+	border-radius: 3px;
+	transition: all 0.3s ease-in-out;
+	letter-spacing: 1px;
+}
+.filters::after {
+	content: "";
+	position: absolute;
+	top: 110%;
+	left: 50%;
+	transform: translateX(-50%);
+	height: 2px;
+	width: 0;
+	background-color: #333333;
+	transition: all 0.3s ease-in-out;
+}
+.filters:hover {
+	color: #333;
+}
+.filters:hover::after {
+	width: 100%;
+}
+.active-btn {
+	color: #333;
+}
+.active-btn::after {
+	width: 100%;
 }

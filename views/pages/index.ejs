@@ -136,8 +136,12 @@
 			x-show="show"
 			x-transition.duration.500ms
 			@click.away="show = false"
-			style="background-color: 
-			<%= flash.type === 'success' ? '#499b68' : '#ec5316' %>;"
+			
+			<% if (flash.type === 'success') { %>
+			style="background-color : #499b68;"
+			<% } else { %>
+				style="background-color:#ec5316;"
+				<% } %>
 		>
 			<p><%= flash.message %></p>
 		</div>
@@ -153,11 +157,18 @@
 		<button id="next">&gt;</button>
 
 		<div id="products">
-			<h1>Nos produits</h1>
+			<h1>Feartured products</h1>
+			<div class="bc">
+				<button class="filters active-btn" id="All">All</button>
+				<button class="filters" id="Monitors">Monitors</button>
+				<button class="filters" id="Computers">Computers</button>
+				<button class="filters" id="Peripheriques">Peripheriques</button>
+				<button class="filters" id="PcParts">Pc parts</button>
+			</div>
 			<br />
 			<div id="slots">
 				<% result.forEach(function(item){ %>
-				<div class="product-card">
+				<div class="product-card All <%= item.category %>">
 					<form action="/product_info" method="post">
 						<input type="hidden" name="id" value="<%= item.id %>" />
 						<input type="hidden" name="title" value="<%= item.name %>" />
@@ -178,13 +189,25 @@
 									</div>
 									<div class="product-details">
 										<h2 class="product-title"><%= item.name %></h2>
-										<p class="product-description">
-											<%= item.description || '' %>
-										</p>
 
 										<span class="discounted-price"
 											><%= item.price %>,00 MAD</span
 										>
+										<% if (item.inStock) { %>
+										<p
+											class="product-description"
+											style="color: rgb(148, 206, 160)"
+										>
+											In stock
+										</p>
+										<% } else { %>
+										<p
+											class="product-description"
+											style="color: rgb(212, 110, 110)"
+										>
+											Out of stock
+										</p>
+										<% }%>
 									</div>
 								</div>
 							</div>
@@ -200,7 +223,17 @@
 						/>
 						<input type="hidden" name="price" value="<%=item.price%>" />
 						<input type="hidden" name="quantity" value="1" />
+						<% if (item.inStock) { %>
 						<input type="submit" class="add-to-cart-btn" value="add to cart" />
+						<% } else { %>
+						<input
+							style="text-align: center; cursor: not-allowed"
+							type="text"
+							class="add-to-cart-btn"
+							value="add to cart"
+							readonly
+						/>
+						<% }%>
 					</form>
 				</div>
 				<% }) %>

@@ -64,3 +64,29 @@ document.getElementById("profile").onclick = function () {
 	menu.style.left = rect.left - 150 + "px";
 	menu.style.display = menu.style.display === "block" ? "none" : "block";
 };
+
+const allFiltersItems = document.querySelectorAll(".product-card");
+const allFiltersBtns = document.querySelectorAll(".filters");
+allFiltersBtns.forEach((btn) => {
+	btn.addEventListener("click", () => {
+		showFilteredContent(btn);
+	});
+});
+
+function showFilteredContent(btn) {
+	allFiltersItems.forEach((item) => {
+		if (item.classList.contains(btn.id)) {
+			resetActiveBtn();
+			btn.classList.add("active-btn");
+			item.style.display = "block";
+		} else {
+			item.style.display = "none";
+		}
+	});
+}
+
+function resetActiveBtn() {
+	allFiltersBtns.forEach((btn) => {
+		btn.classList.remove("active-btn");
+	});
+}

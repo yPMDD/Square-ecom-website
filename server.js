@@ -71,6 +71,7 @@ app.get("/", function (req, res) {
 				user: req.session.user,
 				count: req.session.count,
 			});
+
 			console.log("got items from db succesfully");
 		}
 	});
@@ -275,6 +276,7 @@ app.post("/place_order", (req, res) => {});
 
 const domain = process.env.domain;
 const stripegateway = stripe(process.env.stripe_api);
+
 app.post("/checkout", async (req, res) => {
 	const lineItems = req.session.cart.map((item) => {
 		const unitAmount = Math.round(parseFloat(item.price) * 100);
@@ -290,7 +292,7 @@ app.post("/checkout", async (req, res) => {
 		console.log("inutAmount", unitAmount);
 		return {
 			price_data: {
-				currency: "mad",
+				currency: "MAD",
 				product_data: {
 					name: item.name,
 					images: [imgs],
@@ -498,7 +500,11 @@ app.post("/login", async (req, res) => {
 			let WelcomeMsg = "Welcome " + user.user;
 			// Verify the password
 			const isPasswordValid = await bcrypt.compare(mdp, hashedPassword);
-			if (isPasswordValid) {
+			if (isPasswordValid && user.user == "admin") {
+				req.session.count = req.session.cart.length;
+				req.session.flash = { type: "success", message: WelcomeMsg };
+				res.redirect("/dashboard");
+			} else if (isPasswordValid) {
 				req.session.count = req.session.cart.length;
 				req.session.flash = { type: "success", message: WelcomeMsg };
 				res.redirect("/");
@@ -600,4 +606,13 @@ app.get("/logout", (req, res) => {
 	console.log("logging out");
 	req.session.flash = { type: "success", message: "You have logged out !" };
 	res.redirect("/index");
+});
+
+app.get("/dashboard", (req, res) => {
+	req.session.count = req.session.cart.length;
+	res.render("pages/dashboard", {
+		user: req.session.user,
+		count: req.session.count,
+	});
+	console.log("ADMIN logged in");
 });

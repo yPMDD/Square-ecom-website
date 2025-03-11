@@ -143,17 +143,14 @@
 	</div>
 	<% } %>
 	<body>
-		<div class="products">
-			<div class="title">
-				<h2>Cart</h2>
-				<div class="bar"></div>
-			</div>
-
+		<div class="cart-container">
+			<h1>Your Cart</h1>
 			<!-- Check if the cart is empty -->
 			<% if (!cart || cart.length === 0) { %>
 			<p>Your cart is empty. <a href="/">Continue shopping</a></p>
 			<% } else { %>
-			<table width="1200px">
+			<!-- Cart Table -->
+			<table>
 				<thead>
 					<tr>
 						<th>Image</th>
@@ -161,77 +158,63 @@
 						<th>Price</th>
 						<th>Quantity</th>
 						<th>Total</th>
+						<th>Action</th>
 					</tr>
 				</thead>
 				<tbody>
-					<% cart.forEach(product => { %>
+					<% cart.forEach(item => { %>
 					<tr>
+						<td class="product-image">
+							<img src="<%= item.img %>" alt="<%= item.name %>" />
+						</td>
+						<td class="product-name"><%= item.name %></td>
+						<td class="product-price"><%= item.price.toFixed(2) %> MAD</td>
 						<td>
-							<img
-								width="70px"
-								height="70px"
-								src="<%= product.img %>"
-								alt="<%= product.name %>"
+							<input
+								type="number"
+								class="quantity-input"
+								value="<%= item.quantity %>"
+								min="1"
+								onchange="updateQuantity(<%= item.id %>, this.value)"
 							/>
 						</td>
-						<td><%= product.name %></td>
-						<td><%= product.price.toFixed(2) %> MAD</td>
-						<td><%= product.quantity %></td>
-						<td><%= (product.price * product.quantity).toFixed(2) %> MAD</td>
+						<td class="product-price">
+							<%= (item.price * item.quantity).toFixed(2) %> MAD
+						</td>
 						<td>
 							<form action="/cart/delete" method="POST" style="display: inline">
-								<input type="hidden" name="id" value="<%= product.id %>" />
-								<button type="submit" class="deletebtn">
-									<svg
-										fill="#000000"
-										width="20px"
-										height="20px"
-										viewBox="0 0 1024 1024"
-										xmlns="http://www.w3.org/2000/svg"
-										data-darkreader-inline-fill=""
-										style="--darkreader-inline-fill: #000000"
-									>
-										<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-										<g
-											id="SVGRepo_tracerCarrier"
-											stroke-linecap="round"
-											stroke-linejoin="round"
-										></g>
-										<g id="SVGRepo_iconCarrier">
-											<path
-												d="M831.24 280.772c5.657 0 10.24-4.583 10.24-10.24v-83.528c0-5.657-4.583-10.24-10.24-10.24H194.558a10.238 10.238 0 00-10.24 10.24v83.528c0 5.657 4.583 10.24 10.24 10.24H831.24zm0 40.96H194.558c-28.278 0-51.2-22.922-51.2-51.2v-83.528c0-28.278 22.922-51.2 51.2-51.2H831.24c28.278 0 51.2 22.922 51.2 51.2v83.528c0 28.278-22.922 51.2-51.2 51.2z"
-											></path>
-											<path
-												d="M806.809 304.688l-58.245 666.45c-.544 6.246-6.714 11.9-12.99 11.9H290.226c-6.276 0-12.447-5.654-12.99-11.893L218.99 304.688c-.985-11.268-10.917-19.604-22.185-18.619s-19.604 10.917-18.619 22.185l58.245 666.45c2.385 27.401 26.278 49.294 53.795 49.294h445.348c27.517 0 51.41-21.893 53.796-49.301l58.244-666.443c.985-11.268-7.351-21.201-18.619-22.185s-21.201 7.351-22.185 18.619zM422.02 155.082V51.3c0-5.726 4.601-10.342 10.24-10.342h161.28c5.639 0 10.24 4.617 10.24 10.342v103.782c0 11.311 9.169 20.48 20.48 20.48s20.48-9.169 20.48-20.48V51.3c0-28.316-22.908-51.302-51.2-51.302H432.26c-28.292 0-51.2 22.987-51.2 51.302v103.782c0 11.311 9.169 20.48 20.48 20.48s20.48-9.169 20.48-20.48z"
-											></path>
-											<path
-												d="M496.004 410.821v460.964c0 11.311 9.169 20.48 20.48 20.48s20.48-9.169 20.48-20.48V410.821c0-11.311-9.169-20.48-20.48-20.48s-20.48 9.169-20.48 20.48zm-192.435 1.767l39.936 460.964c.976 11.269 10.903 19.612 22.171 18.636s19.612-10.903 18.636-22.171l-39.936-460.964c-.976-11.269-10.903-19.612-22.171-18.636s-19.612 10.903-18.636 22.171zm377.856-3.535l-39.936 460.964c-.976 11.269 7.367 21.195 18.636 22.171s21.195-7.367 22.171-18.636l39.936-460.964c.976-11.269-7.367-21.195-18.636-22.171s-21.195 7.367-22.171 18.636z"
-											></path>
-										</g>
-									</svg>
-								</button>
+								<input type="hidden" name="id" value="<%= item.id %>" />
+								<button type="submit" class="remove-btn">Remove</button>
 							</form>
 						</td>
 					</tr>
 					<% }); %>
 				</tbody>
-				<br />
 				<tfoot>
 					<tr>
-						<td colspan="4"><strong>Grand Total</strong></td>
-						<td id="total"><strong><%= total.toFixed(2) %> MAD</strong></td>
+						<td colspan="4" class="grand-total">Grand Total</td>
+						<td id="grand-total" class="product-price">
+							<%= total.toFixed(2) %> MAD
+						</td>
+						<td></td>
 					</tr>
 				</tfoot>
 			</table>
-			<br />
-			<br />
-			<form action="/checkout" method="post">
-				<button id="checkout" type="submit">Proceed to Checkout</button>
-			</form>
-			<br />
-			<a href="/">Continue Shopping</a>
+
+			<!-- Buttons -->
+			<div class="buttons">
+				<form action="/" method="get">
+					<button class="btn continue" type="submit">Continue Shopping</button>
+				</form>
+				<form action="/checkout" method="post">
+					<button class="btn checkout" type="submit">
+						Proceed to Checkout
+					</button>
+				</form>
+			</div>
 			<% } %>
 		</div>
+
 		<script src="scripts/cart.js"></script>
 		<script src="scripts/index.js"></script>
 		<div id="menu">
@@ -385,3 +368,135 @@
 		</div>
 	</body>
 </html>
+
+<style>
+	/* General Styles */
+	body {
+		font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+		background-color: #f9f9f9;
+		margin: 0;
+		padding: 0;
+		color: #333;
+	}
+
+	.cart-container {
+		max-width: 1000px;
+		margin: 50px auto;
+		padding: 20px;
+		background: #fff;
+		border-radius: 12px;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	}
+
+	h1 {
+		text-align: center;
+		color: #2c3e50;
+		margin-bottom: 20px;
+	}
+
+	/* Table Styles */
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		margin-bottom: 20px;
+	}
+
+	th,
+	td {
+		padding: 15px;
+		text-align: left;
+		border-bottom: 1px solid #eee;
+	}
+
+	th {
+		background-color: #f8f9fa;
+		font-weight: 600;
+		color: #2c3e50;
+	}
+
+	td {
+		color: #555;
+	}
+
+	tr:hover {
+		background-color: #f5f5f5;
+	}
+
+	.product-image img {
+		width: 80px;
+		height: 80px;
+		object-fit: cover;
+		border-radius: 8px;
+	}
+
+	.product-name {
+		font-weight: 500;
+		color: #2c3e50;
+	}
+
+	.product-price {
+		font-weight: bold;
+		color: #313131;
+	}
+
+	.grand-total {
+		font-weight: bold;
+		color: #2c3e50;
+	}
+
+	.quantity-input {
+		width: 50px;
+		padding: 5px;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		text-align: center;
+	}
+
+	.remove-btn {
+		background: #e74c3c;
+		color: #fff;
+		border: none;
+		padding: 5px 10px;
+		border-radius: 4px;
+		cursor: pointer;
+		transition: background 0.3s ease;
+	}
+
+	.remove-btn:hover {
+		background: #e48379;
+	}
+
+	/* Buttons */
+	.buttons {
+		display: flex;
+		justify-content: space-between;
+		row-gap: 40px;
+	}
+
+	.btn {
+		padding: 4px 10px;
+		border: none;
+		border-radius: 8px;
+		font-size: 16px;
+		cursor: pointer;
+		transition: background 0.3s ease;
+	}
+
+	.btn.continue {
+		background: #6c757d;
+		color: #fff;
+	}
+
+	.btn.continue:hover {
+		background: #5a6268;
+	}
+
+	.btn.checkout {
+		background: #f69c14;
+		color: #fff;
+	}
+
+	.btn.checkout:hover {
+		background: rgb(168, 137, 101);
+	}
+</style>
