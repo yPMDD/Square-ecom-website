@@ -23,8 +23,8 @@ header {
 	/* Equivalent to bg-green-500 in Tailwind */
 	color: white; /* Equivalent to text-white in Tailwind */
 	padding: 0.5rem 1.5rem; /* Equivalent to px-4 py-2 in Tailwind */
-	border-top-right-radius: 0.5rem; /* Rounds top-right corner */
-	border-bottom-right-radius: 0.5rem; /* Rounds bottom-right corner */
+	border-top-right-radius: 0.5rem; 
+	border-bottom-right-radius: 0.5rem; 
 	box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
 		0 4px 6px -4px rgba(0, 0, 0, 0.1);
 	animation: slideIn 0.5s forwards;

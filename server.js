@@ -19,7 +19,6 @@ app.use(
 		saveUninitialized: true,
 	})
 );
-
 dbConfig = {
 	host: "localhost",
 	user: "root",
