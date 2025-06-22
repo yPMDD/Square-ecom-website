@@ -26,7 +26,7 @@ It offers a clean, responsive UI and essential features for building your own on
 ## 📸 Demo Screenshots
 
 ### 🏠 Homepage
-![Homepage](./assets/squareHomePage.png)
+![Homepage](./public/assets/squareHomePage.png)
 
 ## 🚀 Quick Start
 
