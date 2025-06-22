@@ -47,6 +47,8 @@ cp .env.example .env
 
 ## Create the Tables that you will need
 ```bash
+The SQL querries to create these tables are in /main/db.sql 
+
 #products(id, category, name, price, inStock, quantity, image)
 #users(id, user, email, mdp, regl_time)
 #orders(id, user_id, cost, name, email, city, address, phone, date)
