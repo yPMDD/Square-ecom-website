@@ -23,6 +23,10 @@ It offers a clean, responsive UI and essential features for building your own on
 - **Payments**: Stripe API
 
 ---
+## 📸 Demo Screenshots
+
+### 🏠 Homepage
+![Homepage](./assets/squareHomePage.png)
 
 ## 🚀 Quick Start
 
