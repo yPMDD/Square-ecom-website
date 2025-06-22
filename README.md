@@ -47,10 +47,10 @@ cp .env.example .env
 
 ## Create the Tables that you will need
 ```bash
-products(id, category, name, price, inStock, quantity, image)
-users(id, user, email, mdp, regl_time)
-orders(id, user_id, cost, name, email, city, address, phone, date)
-orders_items(id, order_id, product_id, product_name, product_price, product_img, product_quantity, order_date)
+#products(id, category, name, price, inStock, quantity, image)
+#users(id, user, email, mdp, regl_time)
+#orders(id, user_id, cost, name, email, city, address, phone, date)
+#orders_items(id, order_id, product_id, product_name, product_price, product_img, product_quantity, order_date)
 
 ```
 
